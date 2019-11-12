@@ -5,7 +5,7 @@
         <action_delete>false</action_delete>
         <action_insert>true</action_insert>
         <action_query>false</action_query>
-        <action_update>true</action_update>
+        <action_update>false</action_update>
         <active>true</active>
         <add_message>false</add_message>
         <advanced>true</advanced>
@@ -18,7 +18,7 @@
         <filter_condition/>
         <is_rest>false</is_rest>
         <message/>
-        <name>Email Address Syntax Validate</name>
+        <name>NeedIt When needed field date</name>
         <order>100</order>
         <priority>100</priority>
         <rest_method/>
@@ -29,34 +29,41 @@
         <role_conditions/>
         <script><![CDATA[(function executeRule(current, previous /*null when async*/) {
 
-    // Pass the Requested for email to the Script Include.  Store the return
-    // value from the Script Include in the isEmail variable
-    var isEmail = validateEmailAddress(current.u_string_2);
-    // If isEmail is false (email address syntax is not valid) do not save
-    // the record.  Write an error message to the screen.
-    if(isEmail == false){
-        gs.addErrorMessage(current.u_string_2 + " is not a valid email address.  You must provide a valid email address.");
-        current.setAbortAction(true);
-    }
-
+	
+	// If the When needed date is before rightnow, do not write the record to the database
+	// Output an error message to the screen
+	var nItUtils = new NeedItUtils();
+	var pastDateBoolean= nItUtils.isDatePast(current.u_when_needed);
+	var todayDateBoolean= nItUtils.isDateToday(current.u_when_needed);
+	if(pastDateBoolean==true || todayDateBoolean==true){
+		gs.addInfoMessage("When needed date cannot be in the past n today.  Your request has not been saved to the database.");
+		current.setAbortAction(true);
+	}
+	
+	
+	//gs.addInfoMessage("Requested for email is :" + current.u_requested_for.email);
+	//gs.addInfoMessage("requested for employee number is :" + current.u_requested_for.employee_number);
+	if(gs.hasRole("admin")){
+		gs.addInfoMessage("currently logged in user has the admin role");
+	}	
 })(current, previous);]]></script>
         <sys_class_name>sys_script</sys_class_name>
         <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2017-03-08 03:44:46</sys_created_on>
+        <sys_created_on>2019-11-07 19:12:45</sys_created_on>
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
-        <sys_id>01e885f69f513200bde5f79ff57fcf52</sys_id>
-        <sys_mod_count>4</sys_mod_count>
-        <sys_name>Email Address Syntax Validate</sys_name>
+        <sys_id>d9f950a82f0100103de4ea5ef699b6fc</sys_id>
+        <sys_mod_count>9</sys_mod_count>
+        <sys_name>NeedIt When needed field date</sys_name>
         <sys_overrides/>
         <sys_package display_value="NeedIt" source="x_58872_needit">6ead8e780f603200cd674f8ce1050ed1</sys_package>
         <sys_policy/>
         <sys_scope display_value="NeedIt">6ead8e780f603200cd674f8ce1050ed1</sys_scope>
-        <sys_update_name>sys_script_01e885f69f513200bde5f79ff57fcf52</sys_update_name>
+        <sys_update_name>sys_script_d9f950a82f0100103de4ea5ef699b6fc</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2019-11-10 20:03:03</sys_updated_on>
+        <sys_updated_on>2019-11-12 19:54:59</sys_updated_on>
         <template/>
         <when>before</when>
     </sys_script>
-    <sys_translated_text action="delete_multiple" query="documentkey=01e885f69f513200bde5f79ff57fcf52"/>
+    <sys_translated_text action="delete_multiple" query="documentkey=d9f950a82f0100103de4ea5ef699b6fc"/>
 </record_update>
